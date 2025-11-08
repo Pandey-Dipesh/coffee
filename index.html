@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keshari</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="coffee-loader">
+      <div class="coffee-cup">
+        <div class="coffee"></div>
+      </div>
+    </div>
+    <div class="loading-text">
+      Brewing your experience<span class="loading-dots"></span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="mainHeader">
+    <div class="container">
+      <h1>Keshari </h1>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#brewing-tips">Brewing Tips</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="mainHero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Experience the Richness of Keshari </h1>
+        <p>Premium Nepal coffee beans roasted to perfection, delivering an unforgettable taste experience.</p>
+        <div class="hero-btns">
+          <a href="#products" class="btn">Shop Now <i class="fas fa-arrow-right"></i></a>
+          <a href="#brewing-tips" class="btn btn-outline">Brewing Tips</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Grid -->
+  <section id="products" class="products-section">
+    <div class="container">
+      <h2 class="section-title">Our Premium Products</h2>
+      <div class="products">
+        <!-- Espresso Product Card -->
+        <div class="product-card" id="espresso-card">
+          <div class="flip-indicator" title="Click to see details">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="https://res.cloudinary.com/do5hkizql/image/upload/v1762274752/co2_ghuos1.png" 
+                   alt="Espresso" class="product-image">
+              <div class="product-info">
+                <h2>Espresso</h2>
+                <p class="price">Price: $5</p>
+                <button class="shop-btn" data-name="Espresso" data-price="5">Shop</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <h2>Espresso</h2>
+              <p class="price">Price: $5</p>
+              <div class="product-details">
+                <p>Our signature espresso blend with rich, bold flavors and a velvety crema. Perfect for coffee purists.</p>
+                
+              </div>
+              <button class="shop-btn" data-name="Espresso" data-price="5">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cappuccino Product Card -->
+        <div class="product-card" id="cappuccino-card">
+          <div class="flip-indicator" title="Click to see details">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="https://res.cloudinary.com/do5hkizql/image/upload/v1762274733/co1_mzmyb5.png" 
+                   alt="Cappuccino" class="product-image">
+              <div class="product-info">
+                <h2>Cappuccino</h2>
+                <p class="price">Price: $6</p>
+                <button class="shop-btn" data-name="Cappuccino" data-price="6">Shop</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <h2>Cappuccino</h2>
+              <p class="price">Price: $6</p>
+              <div class="product-details">
+                <p>A perfect balance of espresso, steamed milk, and foam. Creamy texture with a rich coffee flavor.</p>
+                
+              </div>
+              <button class="shop-btn" data-name="Cappuccino" data-price="6">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Masala Chai Product Card -->
+        <div class="product-card" id="masala-chai-card">
+          <div class="flip-indicator" title="Click to see details">
+            <i class="fas fa-sync-alt"></i>
+          </div>
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="https://res.cloudinary.com/do5hkizql/image/upload/v1762275307/fd297439-c460-4794-8b30-5bf8c11c8083_hscjjx.jpg" 
+                   alt="Masala Chai" class="product-image">
+              <div class="product-info">
+                <h2>Masala Chai</h2>
+                <p class="price">Price: $4</p>
+                <button class="shop-btn" data-name="Masala Chai" data-price="4">Shop</button>
+              </div>
+            </div>
+            <div class="card-back">
+              <h2>Masala Chai</h2>
+              <p class="price">Price: $4</p>
+              <div class="product-details">
+                <p>Traditional Nepal spiced tea with cardamom, cinnamon, ginger, and cloves. Aromatic and soothing.</p>
+                <div class="weight-info">
+                 
+                </div>
+              </div>
+              <button class="shop-btn" data-name="Masala Chai" data-price="4">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coffee Quote Section -->
+  <section class="coffee-quote">
+    <div class="container">
+      <h2>Coffee - The Elixir of Life</h2>
+      <p>"I have measured out my life with coffee spoons. Each sip tells a story, each aroma carries a memory. At Keshari, we believe coffee is more than a beverage - it's a ritual, a moment of peace, a spark of creativity, and a warm embrace in a busy world."</p>
+    </div>
+  </section>
+
+  <!-- Order Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <div class="modal-header" id="productName">Order Product</div>
+      <form id="orderForm">
+        <label>
+          Name:
+          <input type="text" id="customerName" required>
+        </label>
+        <label>
+          Phone:
+          <input type="text" id="customerPhone" required>
+        </label>
+        <label>
+          Location:
+          <input type="text" id="customerLocation" required>
+        </label>
+        <label>
+          Email:
+          <input type="email" id="customerEmail" required>
+        </label>
+        <label>
+          Quantity:
+          <div class="quantity-controls">
+            <button type="button" id="decreaseQty">-</button>
+            <span id="quantityDisplay">1</span>
+            <button type="button" id="increaseQty">+</button>
+          </div>
+          <div class="weight-options">
+            <button type="button" class="weight-btn" data-weight="50">50g</button>
+            <button type="button" class="weight-btn" data-weight="100">100g</button>
+            <button type="button" class="weight-btn" data-weight="250">250g</button>
+            <button type="button" class="weight-btn" data-weight="500">500g</button>
+          </div>
+        </label>
+        
+        <div class="qr-code">
+          <p>Scan this QR to pay:</p>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=KeshariCoffeeShop" alt="QR Code">
+        </div>
+        
+        <div class="payment-instructions">
+          <h3>Payment Instructions:</h3>
+          <ol>
+            <li>Scan the QR code above to make payment</li>
+            <li>Take a screenshot of your payment confirmation</li>
+            <li>Keep the screenshot ready for verification</li>
+            <li>Submit your order details below</li>
+          </ol>
+        </div>
+
+        <label>
+          Transaction ID (Optional):
+          <input type="text" id="transactionId" placeholder="Enter your payment transaction ID">
+        </label>
+
+        <button type="submit" id="submitOrder">Submit Order</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Brewing Tips Section -->
+  <section id="brewing-tips" class="brewing-tips-section">
+    <div class="container">
+      <h2 class="section-title">Brewing Tips & Techniques</h2>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-mug-hot"></i>
+          </div>
+          <h3>Perfect Temperature</h3>
+          <p>Brew your coffee between 195°F to 205°F for optimal extraction. Too hot and it becomes bitter, too cold and it's under-extracted.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-hourglass-half"></i>
+          </div>
+          <h3>Brewing Time</h3>
+          <p>For pour-over methods, aim for 3-4 minutes. Espresso should take 25-30 seconds. Adjust based on your taste preferences.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-weight"></i>
+          </div>
+          <h3>Proper Ratios</h3>
+          <p>Use 1:15 to 1:18 coffee to water ratio. For a strong cup, try 1:15. For lighter flavor, use 1:18. Measure with a scale for consistency.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-tint"></i>
+          </div>
+          <h3>Water Quality</h3>
+          <p>Use filtered water for the best taste. Hard water can affect extraction and leave mineral deposits in your equipment.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-wind"></i>
+          </div>
+          <h3>Storage Tips</h3>
+          <p>Store coffee beans in an airtight container away from light, heat, and moisture. Grind just before brewing for maximum freshness.</p>
+        </div>
+        
+        <div class="tip-card">
+          <div class="tip-icon">
+            <i class="fas fa-mortar-pestle"></i>
+          </div>
+          <h3>Grind Size</h3>
+          <p>Match grind size to your brewing method: coarse for French press, medium for drip, fine for espresso, and extra fine for Turkish.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container" id="about">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Keshari Coffee</h3>
+          <p>Premium Nepal coffee experience with traditional flavors and modern brewing techniques.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#brewing-tips">Brewing Tips</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Contact Info</h3>
+          <ul class="footer-links">
+            <li><i class="fas fa-map-marker-alt"></i> Pokhara-1,Bagar</li>
+            <li><i class="fas fa-phone"></i> +977 981862184</li>
+            <li><i class="fas fa-envelope"></i>Diepesh,pandey@gmail.com</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Keshari Coffee. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+
+
+  <script src="script.js"></script>
+</body>
+</html>

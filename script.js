@@ -1,313 +1,166 @@
-// Google Sheets Integration
-const sheetDBUrl = 'https://sheetdb.io/api/v1/x04czwuq20aji';
-const isSheetDBEnabled = true; // Enable Google Sheets integration
+/**
+ * PROTECTED LOGIC - DO NOT EDIT
+ * This section contains encoded data and security measures.
+ */
+(function() {
+    "use strict";
 
-// Order management variables
-let currentProduct = '';
-let currentPrice = 0;
-let currentQuantity = 1;
-let currentWeight = 250; // Default weight in grams
-
-// DOM elements
-const loadingScreen = document.getElementById('loadingScreen');
-const mainHeader = document.getElementById('mainHeader');
-const mainHero = document.getElementById('mainHero');
-const productsSection = document.querySelector('.products-section');
-const coffeeQuote = document.querySelector('.coffee-quote');
-const brewingTips = document.querySelector('.brewing-tips-section');
-const orderModal = document.getElementById('orderModal');
-const closeModal = document.getElementById('closeModal');
-const productNameEl = document.getElementById('productName');
-const quantityDisplay = document.getElementById('quantityDisplay');
-const decreaseQty = document.getElementById('decreaseQty');
-const increaseQty = document.getElementById('increaseQty');
-const submitOrder = document.getElementById('submitOrder');
-const orderForm = document.getElementById('orderForm');
-const toast = document.getElementById('toast');
-const weightBtns = document.querySelectorAll('.weight-btn');
-
-// Initialize page with loading animation
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    loadingScreen.classList.add('hidden');
-    
-    // Show header with animation
-    setTimeout(() => {
-      mainHeader.classList.add('visible');
-    }, 100);
-    
-    // Show hero section with animation
-    setTimeout(() => {
-      mainHero.classList.add('visible');
-    }, 300);
-    
-    // Show products section with animation when scrolled into view
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-    
-    observer.observe(productsSection);
-    observer.observe(coffeeQuote);
-    observer.observe(brewingTips);
-  }, 2000); // Simulate loading time
-});
-
-// Product card interactions
-document.querySelectorAll('.product-card').forEach(card => {
-  // For touch devices - flip on tap
-  card.addEventListener('touchstart', function(e) {
-    // Only flip if not tapping a button
-    if (!e.target.closest('.shop-btn') && !e.target.closest('.flip-indicator')) {
-      this.classList.toggle('touched');
-    }
-  });
-  
-  // For desktop - flip on click of indicator
-  card.querySelector('.flip-indicator').addEventListener('click', function(e) {
-    e.stopPropagation();
-    card.classList.toggle('flipped');
-  });
-});
-
-// Weight selection functionality
-document.querySelectorAll('.weight-option').forEach(option => {
-  option.addEventListener('click', function() {
-    const weightContainer = this.closest('.weight-info');
-    weightContainer.querySelectorAll('.weight-option').forEach(opt => {
-      opt.classList.remove('active');
+    // Disable right-click and certain key combinations
+    document.addEventListener("contextmenu", function(e) {
+        e.preventDefault();
     });
-    this.classList.add('active');
-  });
-});
 
-// Weight selection in modal
-weightBtns.forEach(btn => {
-  btn.addEventListener('click', function() {
-    // Remove active class from all weight buttons
-    weightBtns.forEach(b => b.classList.remove('active'));
-    // Add active class to clicked button
-    this.classList.add('active');
-    // Update current weight
-    currentWeight = parseInt(this.dataset.weight);
-  });
-});
-
-// Product buttons (both front and back)
-document.querySelectorAll('.shop-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    currentProduct = btn.dataset.name;
-    currentPrice = parseFloat(btn.dataset.price);
-    currentQuantity = 1;
-    currentWeight = 250; // Reset to default weight
-    quantityDisplay.textContent = currentQuantity;
-    
-    // Reset weight buttons in modal
-    weightBtns.forEach(b => b.classList.remove('active'));
-    // Set 250g as active by default
-    document.querySelector('.weight-btn[data-weight="250"]').classList.add('active');
-    
-    // Update modal header with product info
-    productNameEl.textContent = `Order ${currentProduct} - $${currentPrice}`;
-    
-    // Show modal
-    orderModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  });
-});
-
-// Close modal
-closeModal.addEventListener('click', () => {
-  orderModal.style.display = 'none';
-  document.body.style.overflow = 'auto';
-});
-
-// Close modal when clicking outside
-window.addEventListener('click', (e) => {
-  if (e.target === orderModal) {
-    orderModal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-  }
-});
-
-// Quantity controls
-decreaseQty.addEventListener('click', () => {
-  if (currentQuantity > 1) {
-    currentQuantity--;
-    quantityDisplay.textContent = currentQuantity;
-  }
-});
-
-increaseQty.addEventListener('click', () => {
-  currentQuantity++;
-  quantityDisplay.textContent = currentQuantity;
-});
-
-// Form submission
-orderForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  // Get form values
-  const name = document.getElementById('customerName').value.trim();
-  const phone = document.getElementById('customerPhone').value.trim();
-  const location = document.getElementById('customerLocation').value.trim();
-  const email = document.getElementById('customerEmail').value.trim();
-  const transactionId = document.getElementById('transactionId').value.trim();
-
-  // Validate required fields
-  if (!name || !phone || !location || !email) {
-    showToast('Please fill in all required fields', 'error');
-    return;
-  }
-
-  // Show loading state
-  const originalText = submitOrder.textContent;
-  submitOrder.classList.add('loading');
-  submitOrder.disabled = true;
-
-  // Submit to Google Sheets if enabled
-  if (isSheetDBEnabled) {
-    // Prepare payload for Google Sheets - INCLUDING weightDisplay
-    const payload = {
-      data: {
-        customerName: name,
-        customerPhone: phone,
-        customerLocation: location,
-        quantityDisplay: currentQuantity.toString(),
-        customerEmail: email,
-        coustomerUpload: transactionId || 'No transaction ID provided',
-        weightDisplay: `${currentWeight}g`, // ADDED THIS LINE
-        productName: currentProduct,
-        price: currentPrice.toString(),
-        weight: `${currentWeight}g`,
-        totalAmount: (currentPrice * currentQuantity).toFixed(2),
-        orderDate: new Date().toLocaleDateString(),
-        timestamp: new Date().toISOString(),
-        status: 'Pending Payment Verification'
-      }
+    document.onkeydown = function(e) {
+        if (e.keyCode === 123) return false; // F12
+        if (e.ctrlKey && e.shiftKey && e.keyCode === "I".charCodeAt(0)) return false; // Ctrl+Shift+I
+        if (e.ctrlKey && e.shiftKey && e.keyCode === "C".charCodeAt(0)) return false; // Ctrl+Shift+C
+        if (e.ctrlKey && e.shiftKey && e.keyCode === "J".charCodeAt(0)) return false; // Ctrl+Shift+J
+        if (e.ctrlKey && e.keyCode === "U".charCodeAt(0)) return false; // Ctrl+U
     };
 
-    console.log('Sending payload to SheetDB:', payload);
-
-    try {
-      const response = await fetch(sheetDBUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('SheetDB API Error:', errorText);
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
-      }
-
-      const result = await response.json();
-      console.log('Order submitted successfully:', result);
-      
-      // Show success message
-      showToast('Order submitted successfully! We will verify your payment and contact you soon.', 'success');
-      
-      // Reset form and close modal
-      orderModal.style.display = 'none';
-      orderForm.reset();
-      document.body.style.overflow = 'auto';
-      
-    } catch (error) {
-      console.error('Submission error:', error);
-      showToast('Error submitting order. Please try again or contact support.', 'error');
-    } finally {
-      // Reset button state
-      submitOrder.classList.remove('loading');
-      submitOrder.disabled = false;
-      submitOrder.textContent = originalText;
+    // Encoded Software Data
+var _0x5f2a = `[
+    {
+        "name": "Adobe Photoshop",
+        "desc": "The industry standard for photo editing and graphic design.",
+        "cat": "Design",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/a/af/Adobe_Photoshop_CC_icon.svg",
+        "rate": 4.9,
+        "down": "1.2M",
+        "size": "2.4 GB",
+        "official": "https://www.adobe.com/products/photoshop.html",
+        "google": "https://mega.nz/file/ywBWzbQS#pRseNnr6fZ5xxjyrufTHLDRA-rmknaRYKYhlM6scmUc",
+        "color": "#31C5F0"
+    },
+    {
+        "name": "Premiere Pro",
+        "desc": "Professional video editing software for film, TV, and the web.",
+        "cat": "Video",
+        "icon": "https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg",
+        "rate": 4.8,
+        "down": "850K",
+        "size": "8.1 GB",
+        "official": "https://www.adobe.com/products/premiere.html",
+        "google": "https://mega.nz/file/m4gwxbbC#W7-hf37yYtfy50tJh9dZz72bKc6lBIw8p6jY2HnxIps",
+        "color": "#9D50E8"
+    },
+    {
+        "name": "CapCut",
+        "desc": "Easy-to-use yet powerful video editing software for creators, offering advanced effects, transitions, and AI-powered tools.",
+        "cat": "Video",
+        "icon": "https://tse1.mm.bing.net/th/id/OIP.TCxG5sHUhF83uYz5jnsAEgHaEK?cb=ucfimg2&ucfimg=1&w=1920&h=1080&rs=1&pid=ImgDetMain&o=7&rm=3",
+        "rate": 4.7,
+        "down": "500M",
+        "size": "300 MB",
+        "official": "https://www.capcut.com/",
+        "google": "https://mega.nz/file/akYxHCQR#GioYjQqA7YYf_jU3YL-Ax6dt52M7ej5mxMrtGMgIM2w",
+        "color": "#000000"
     }
-  } else {
-    // Demo mode - simulate successful order
-    setTimeout(() => {
-      const totalAmount = (currentPrice * currentQuantity).toFixed(2);
-      
-      console.log('Demo Order Details:', {
-        customerName: name,
-        customerPhone: phone,
-        customerLocation: location,
-        quantityDisplay: currentQuantity,
-        customerEmail: email,
-        weightDisplay: `${currentWeight}g`, // ADDED THIS LINE
-        productName: currentProduct,
-        price: currentPrice,
-        weight: `${currentWeight}g`,
-        totalAmount: totalAmount,
-        transactionId: transactionId
-      });
+]`;
 
-      showToast(`Demo: Order for ${currentProduct} (Qty: ${currentQuantity}, Weight: ${currentWeight}g) submitted successfully! Total: $${totalAmount}`, 'success');
-      
-      // Reset form and close modal
-      orderModal.style.display = 'none';
-      orderForm.reset();
-      document.body.style.overflow = 'auto';
+    var softwareDatabase = JSON.parse(_0x5f2a);
+    var currentCategory = "All";
 
-      // Reset button state
-      submitOrder.classList.remove('loading');
-      submitOrder.disabled = false;
-    }, 1500);
-  }
-});
+    // Render software cards
+    window.render = function(data) {
+        var grid = document.getElementById("softwareGrid");
+        var count = document.getElementById("count");
 
-// Toast notification function
-function showToast(message, type = 'success') {
-  toast.textContent = message;
-  toast.className = '';
-  if (type === 'error') {
-    toast.classList.add('error');
-  } else if (type === 'warning') {
-    toast.classList.add('warning');
-  }
-  toast.style.display = 'block';
-  
-  setTimeout(() => {
-    toast.style.display = 'none';
-  }, 5000);
-}
+        grid.innerHTML = "";
+        count.innerText = data.length;
 
-// Hero buttons functionality
-document.querySelectorAll('.hero-btns .btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    if (btn.textContent.includes('Shop Now')) {
-      e.preventDefault();
-      document.querySelector('#products').scrollIntoView({
-        behavior: 'smooth'
-      });
-    } else if (btn.textContent.includes('Brewing Tips')) {
-      e.preventDefault();
-      document.querySelector('#brewing-tips').scrollIntoView({
-        behavior: 'smooth'
-      });
-    }
-  });
-});
+        if (data.length) {
+            data.forEach(function(software, index) {
+                var delay = 0.05 * index;
+                grid.innerHTML += `
+                    <div class="card animate-in" style="animation-delay:${delay}s">
+                        <div class="card-header">
+                            <img class="app-icon" src="${software.icon}" alt="${software.name} logo" />
+                        </div>
+                        <div class="card-body">
+                            <span class="tag">${software.cat}</span>
+                            <h3>${software.name}</h3>
+                            <p>${software.desc}</p>
+                            <div class="meta-row">
+                                <div class="meta-item"><i class="fas fa-star"></i> ${software.rate}</div>
+                                <div class="meta-item"><i class="fas fa-download" style="color:var(--text-muted)"></i> ${software.down}</div>
+                                <div class="meta-item"><i class="fas fa-hdd" style="color:var(--text-muted)"></i> ${software.size}</div>
+                            </div>
+                            <div class="action-row">
+                                <button class="btn btn-outline" onclick="openLink('${software.official}')">
+                                    Go with link <i class="fas fa-external-link-alt" style="font-size:0.8em"></i>
+                                </button>
+                                <button class="btn btn-primary" onclick="openLink('${software.google}')">
+                                    Download <i class="fas fa-arrow-down" style="font-size:0.8em"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            grid.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 0; color:var(--text-muted)">
+                    <i class="fas fa-search" style="font-size:3rem;margin-bottom:20px;opacity:0.3"></i>
+                    <h3>No software found</h3>
+                    <p>Try adjusting your search terms or filters</p>
+                </div>
+            `;
+        }
+    };
 
-// Add console info for debugging
-console.log('Keshari Coffee Shop - SheetDB Integration Active');
-console.log('Google Sheet Columns Detected:');
-console.log('- customerName');
-console.log('- customerPhone');
-console.log('- customerLocation');
-console.log('- quantityDisplay');
-console.log('- customerEmail');
-console.log('- coustomerUpload (now used for transaction ID)');
-console.log('- weightDisplay'); // ADDED THIS LINE
+    // Open external link
+    window.openLink = function(url) {
+        window.open(url, "_blank", "noopener");
+    };
+
+    // Filter by category
+    window.filterCategory = function(category) {
+        currentCategory = category;
+        document.querySelectorAll(".filter-chip").forEach(function(chip) {
+            if (chip.innerText.includes(category) || (category === "Video" && chip.innerText.includes("Video"))) {
+                chip.classList.add("active");
+            } else {
+                chip.classList.remove("active");
+            }
+        });
+        applyFilters();
+    };
+
+    // Search and apply filters
+    window.searchSoftware = function() {
+        applyFilters();
+    };
+
+    window.applyFilters = function() {
+        var searchValue = document.getElementById("searchInput").value.toLowerCase();
+        var filtered = softwareDatabase.filter(function(software) {
+            var matchesSearch = software.name.toLowerCase().includes(searchValue) || software.desc.toLowerCase().includes(searchValue);
+            var matchesCategory = currentCategory === "All" ? true : (currentCategory === "Video" ? software.cat === "Video" || software.cat === "3D" : software.cat === currentCategory);
+            return matchesSearch && matchesCategory;
+        });
+        render(filtered);
+    };
+
+    // Mobile menu toggle
+    window.toggleMobileMenu = function() {
+        var menu = document.getElementById("mobileNav");
+        var icon = document.querySelector(".mobile-menu-btn i");
+        if (menu.style.display === "flex") {
+            menu.style.display = "none";
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+        } else {
+            menu.style.display = "flex";
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+        }
+    };
+
+    // Event listeners
+    document.getElementById("searchInput").addEventListener("input", searchSoftware);
+    document.addEventListener("DOMContentLoaded", function() {
+        render(softwareDatabase);
+    });
+
+})();

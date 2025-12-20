@@ -55,6 +55,18 @@ var _0x5f2a = `[
         "official": "https://www.capcut.com/",
         "google": "https://mega.nz/file/akYxHCQR#GioYjQqA7YYf_jU3YL-Ax6dt52M7ej5mxMrtGMgIM2w",
         "color": "#000000"
+    },
+    {
+        "name": "After Effects",
+        "desc": "Professional motion graphics and visual effects software.",
+        "cat": "Video",
+        "icon": "https://www.adobe.com/cc-shared/assets/img/product-icons/svg/after-effects-40.svg",
+        "rate": 4.7,
+        "down": "750K",
+        "size": "1.8 GB",
+        "official": "https://www.adobe.com/products/aftereffects.html",
+        "google": "https://mega.nz/file/TgoR3bzZ#NsKYYH8ynNxdeDLE1zmYUcaHwk-MW3OX8o_jTck61jE",
+        "color": "#FF6B35"
     }
 ]`;
 

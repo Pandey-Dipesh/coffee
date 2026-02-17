@@ -1,103 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Keshari Software Hub</title>
-  
-  <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
- <link rel="stylesheet" href="style.css"></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>EditConnect — editor portfolios & jobs</title>
+  <!-- Font Awesome & custom styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
-<header>
-  <div class="container header-content">
-    <a class="logo brand-font" href="#">
-      <i class="fas fa-bolt"></i> Keshari
-    </a>
-    
-    <nav class="desktop-nav">
-      <a href="#" class="active">Home</a>
-      <a href="#software">Software</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">
-      <i class="fas fa-bars"></i>
-    </button>
-  </div>
+<!-- Background Music – autoplay with muted, then unmute on first interaction -->
+<audio id="bgMusic" loop preload="auto" autoplay muted style="display: none;">
+  <source src="https://res.cloudinary.com/do5hkizql/video/upload/v1771276477/Chill_Lofi_Beats_Mix_chill_lo-fi_hip_hop_beats_Study_Relax_Music_Vol._32_BCxTQq0UiFs_ylwr5j.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
-  <div class="mobile-nav-overlay" id="mobileNav">
-    <a href="#" onclick="toggleMobileMenu()">Home</a>
-    <a href="#software" onclick="toggleMobileMenu()">Software</a>
-    <a href="#contact" onclick="toggleMobileMenu()">Contact</a>
-  </div>
-</header>
-<section class="hero">
-  <div class="container">
-    <h1 class="brand-font">Premium Software Downloads</h1>
-    <p> Fast  Updated Daily</p>
-    
-    <div class="filters" id="categoryFilters">
-      <button class="filter-chip active" onclick="filterCategory('All')">All Apps</button>
-      <button class="filter-chip" onclick="filterCategory('Design')">Design</button>
-      <button class="filter-chip" onclick="filterCategory('Development')">Development</button>
-      <button class="filter-chip" onclick="filterCategory('Productivity')">Productivity</button>
-      <button class="filter-chip" onclick="filterCategory('Video')">Video & 3D</button>
-    </div>
-  </div>
+<!-- Toast notification container -->
+<div id="toast-container" class="toast-container"></div>
 
-    <div class="search-wrapper">
-      <input id="searchInput" class="search-box" type="text" placeholder="Search for software (e.g., Photoshop, VS Code)..." />
-      <button class="search-btn" onclick="searchSoftware()">
-        <i class="fas fa-search"></i>
+<div class="container">
+  <header>
+    <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">EditConnect</div>
+    <div class="nav-links">
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'})">Home</a>
+      <a href="#" id="browse-editors-link">Editors</a>
+      <a href="#" id="browse-jobs-link">Jobs</a>
+      <button class="music-toggle" id="musicToggle" title="Toggle background music">
+        <i class="fas fa-volume-mute" id="musicIcon"></i>
       </button>
-    </div>
-
-</section>
-
-<section id="software" class="software-section">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title brand-font">Popular Downloads</h2>
-      <span style="color: var(--text-muted);">Showing <span id="count">0</span> results</span>
-    </div>
-    <div class="grid" id="softwareGrid">
-      <!-- Cards injected by JS -->
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <h2 class="brand-font">⚡ Keshari </h2>
+      <div class="messages-icon" id="messages-icon" onclick="window.openInbox()" style="display: none;">
+        <i class="fas fa-comment-dots"></i>
+        <span class="badge" id="unread-badge" style="display: none;">0</span>
       </div>
-      <div class="footer-links">
-        <h4>Platform</h4>
-        <ul>
-          <li><a href="#">Browse All</a></li>
-        </ul>
-      </div>
-      <div class="footer-links">
-        <h4>Support</h4>
+      <a href="#" class="btn btn-outline btn-small" id="login-btn" onclick="window.showLoginModal()">Login</a>
+      <div class="user-menu" id="user-menu" style="display: none;">
+        <div class="user-avatar" id="user-avatar">
+          <i class="fas fa-user-circle" id="avatar-icon"></i>
+          <img id="avatar-img" src="" alt="" style="display: none;">
+          <span id="user-role-text">Loading...</span>
+        </div>
+        <div class="dropdown-content">
+          <a href="#" id="dashboard-link" onclick="window.openRoleDashboard()">Dashboard</a>
+          <button onclick="window.logout()">Logout</button>
+        </div>
       </div>
     </div>
-    <div class="copyright">
-        &copy; 2025 Keshari . All rights reserved. Made with <i class="fas fa-heart" style="color: #ef4444;"></i> for creators.
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1 id="hero-title">Find the perfect editor for your next project</h1>
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary btn-large" id="hero-action-btn">Find an Editor</a>
+      </div>
     </div>
-    <div><section style="padding: 20px; background: #f8f8f8; border-top: 1px solid #ddd; font-size: 12px; color: #555; text-align: center; line-height: 1.5;">
-    <p>
-        All products and software are <strong>not hosted by Keshari</strong>; we only provide and manage links to third-party sources. 
-        These downloads are <strong>not our responsibility</strong>, and use of any software is at your own risk. 
-        By downloading software from our links, you agree to comply with all applicable laws.
-    </p>
-</section>
+    <div class="hero-image">
+      <i class="fas fa-play-circle" style="font-size: 4rem; opacity: 0.6;"></i>
+    </div>
+  </section>
+
+  <!-- Editors section with search -->
+  <section id="featured-section" style="display: block;">
+    <h2 class="section-title" id="featured-title">Editors</h2>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" id="editor-search" class="search-input" placeholder="Search by name, specialty, or software...">
+    </div>
+    <div class="editor-grid" id="editor-grid"></div>
+  </section>
+
+  <!-- Jobs section with search -->
+  <section id="jobs-section" style="display: none;">
+    <h2 class="section-title" id="jobs-title">Jobs</h2>
+    <div class="search-bar">
+      <i class="fas fa-search"></i>
+      <input type="text" id="job-search" class="search-input" placeholder="Search by title, client, or software...">
+    </div>
+    <div class="jobs-grid" id="jobs-grid"></div>
+  </section>
+
+  <footer class="footer">
+    <div>© 2025 EditConnect</div>
+    <div>
+      <a href="#">About</a>
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+    </div>
+  </footer>
 </div>
+
+<!-- ========== MODALS ========== -->
+
+<!-- Login Modal -->
+<div class="modal-overlay login-modal" id="loginModal">
+  <div class="modal">
+    <h2 style="font-size:2rem; margin-bottom:12px;">Welcome back</h2>
+    <p style="color:#475569; margin-bottom:28px;">Log in to view profiles and portfolios.</p>
+    <div class="google-btn" id="google-login-btn" style="display:flex; align-items:center; justify-content:center; gap:12px; width:100%; padding:14px; border-radius:40px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer;">
+      <i class="fab fa-google" style="color:#4285F4; font-size:1.4rem;"></i> Continue with Google
+    </div>
+    <button class="close-modal" onclick="window.closeModal('loginModal')">Close</button>
   </div>
-</footer>
-<script src="script.js"></script>
+</div>
+
+<!-- Role Selection Modal -->
+<div class="modal-overlay role-modal" id="roleModal">
+  <div class="modal">
+    <h2 style="font-size:2rem; margin-bottom:12px;">Choose your account type</h2>
+    <p style="color:#475569; margin-bottom:28px;">Are you an editor looking for work, or a client hiring editors?</p>
+    <div class="role-buttons" style="display:flex; flex-direction:column; gap:12px; margin:28px 0 8px;">
+      <button class="role-btn" onclick="window.selectRole('editor')" style="flex:1; padding:16px; border-radius:40px; border:2px solid #e2e8f0; background:white; font-weight:600; font-size:1rem; cursor:pointer;">🎬 Editor</button>
+      <button class="role-btn" onclick="window.selectRole('client')" style="flex:1; padding:16px; border-radius:40px; border:2px solid #e2e8f0; background:white; font-weight:600; font-size:1rem; cursor:pointer;">💼 Client</button>
+    </div>
+    <button class="close-modal" onclick="window.closeModal('roleModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Editor Profile Modal -->
+<div class="modal-overlay profile-modal" id="profileModal">
+  <div class="modal">
+    <div class="profile-header" style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; margin-bottom:24px;">
+      <div class="profile-avatar" style="width:90px; height:90px; border-radius:50%; background:#cbd5e1;"></div>
+      <div class="profile-info">
+        <h2 id="profile-name" style="font-size:1.8rem; font-weight:600;">Alex Morgan</h2>
+        <div class="profile-style" id="profile-style" style="color:#475569;">Editor</div>
+      </div>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">Software</h3>
+      <div class="software-list" id="profile-software" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">Specialties</h3>
+      <div class="specialties-list" id="profile-specialties" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">Experience</h3>
+      <p id="profile-experience" style="color:#334155;"></p>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">What I Offer</h3>
+      <p id="profile-proposal" style="color:#334155;"></p>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px; border-bottom:1px solid #e2e8f0; padding-bottom:4px;">Portfolio</h3>
+      <div class="portfolio-grid" id="profile-portfolio"></div>
+    </div>
+    <button class="chat-btn" id="chatBtn" onclick="window.openPrivateChat()" style="width:100%; background:#0f172a; color:white; border:none; border-radius:40px; padding:14px; font-weight:600; font-size:1.1rem; cursor:pointer; margin:20px 0;">Chat with <span id="chat-btn-name">Alex</span></button>
+    <button class="close-modal" onclick="window.closeModal('profileModal')">Close</button>
+  </div>
+</div>
+
+<!-- Job View Modal -->
+<div class="modal-overlay job-modal" id="jobModal">
+  <div class="modal">
+    <div class="job-header" style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+      <div class="avatar" style="width:60px; height:60px; border-radius:50%; background:#cbd5e1;"></div>
+      <div class="job-info">
+        <h2 id="job-title" style="font-size:1.8rem; font-weight:600;">Job Title</h2>
+        <div class="job-meta" id="job-client" style="color:#475569;">Posted by Client</div>
+      </div>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px;">Description</h3>
+      <p id="job-description" style="background:#f8fafc; padding:16px; border-radius:24px;"></p>
+    </div>
+    <div class="profile-section" style="margin-bottom:20px;">
+      <h3 style="font-size:1.2rem; font-weight:600; margin-bottom:8px;">Required Software</h3>
+      <div class="software-list" id="job-software" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+    <button class="chat-btn" id="jobChatBtn" onclick="window.openJobChat()" style="width:100%; background:#0f172a; color:white; border:none; border-radius:40px; padding:14px; font-weight:600; font-size:1.1rem; cursor:pointer; margin:20px 0;">Chat about this job</button>
+    <button class="close-modal" onclick="window.closeModal('jobModal')">Close</button>
+  </div>
+</div>
+
+<!-- Chat Modal -->
+<div class="modal-overlay chat-modal" id="chatModal">
+  <div class="modal" style="height:600px; display:flex; flex-direction:column; padding:16px;">
+    <h3 id="chat-modal-title" style="font-size:1.4rem; margin-bottom:8px;">Chat with Alex</h3>
+    <div class="chat-messages" id="chatMessages" style="flex:1; overflow-y:auto; border:1px solid #f1f5f9; border-radius:24px; padding:16px; margin-bottom:16px; background:#fafafa;"></div>
+    <div class="chat-input-area" style="display:flex; gap:8px;">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Type a message..." style="flex:1; padding:14px 20px; border:1px solid #e2e8f0; border-radius:40px; font-size:1rem;">
+      <button class="chat-send" id="chatSendBtn" style="background:#0f172a; color:white; border:none; border-radius:40px; padding:0 24px; font-weight:600; cursor:pointer;">Send</button>
+    </div>
+    <button class="close-modal" onclick="window.closeModal('chatModal')" style="margin-top:16px;">Close</button>
+  </div>
+</div>
+
+<!-- Inbox Modal (improved) -->
+<div class="modal-overlay inbox-modal" id="inboxModal">
+  <div class="modal">
+    <h2 style="font-size:1.8rem; margin-bottom:16px;">Your Messages</h2>
+    <div id="inboxList" class="inbox-list"></div>
+    <button class="close-modal" onclick="window.closeModal('inboxModal')">Close</button>
+  </div>
+</div>
+
+<!-- Editor Dashboard Modal (profile form) -->
+<div class="modal-overlay dashboard-modal" id="dashboardModal">
+  <div class="modal">
+    <h2 style="font-size:1.8rem; margin-bottom:24px;">Complete Your Editor Profile</h2>
+    <form id="editorProfileForm">
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Full Name</h3>
+        <input type="text" name="name" class="dashboard-input" required>
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Software I Use</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="software" value="Premiere Pro"> Premiere Pro</label>
+          <label><input type="checkbox" name="software" value="After Effects"> After Effects</label>
+          <label><input type="checkbox" name="software" value="DaVinci Resolve"> DaVinci Resolve</label>
+          <label><input type="checkbox" name="software" value="Final Cut Pro"> Final Cut Pro</label>
+          <label><input type="checkbox" name="software" value="Photoshop"> Photoshop</label>
+        </div>
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Work Experience</h3>
+        <textarea name="experience" class="dashboard-textarea" rows="3" required></textarea>
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Video Specialties (at least 3)</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="specialties" value="Cinematic"> Cinematic</label>
+          <label><input type="checkbox" name="specialties" value="Documentary"> Documentary</label>
+          <label><input type="checkbox" name="specialties" value="Music Video"> Music Video</label>
+          <label><input type="checkbox" name="specialties" value="Commercial"> Commercial</label>
+          <label><input type="checkbox" name="specialties" value="Motion Graphics"> Motion Graphics</label>
+          <label><input type="checkbox" name="specialties" value="Color Grading"> Color Grading</label>
+          <label><input type="checkbox" name="specialties" value="VFX"> VFX</label>
+        </div>
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Project Links (URLs) – up to 3</h3>
+        <input type="url" name="portfolio1" class="portfolio-link-input" placeholder="Project URL 1">
+        <input type="url" name="portfolio2" class="portfolio-link-input" placeholder="Project URL 2">
+        <input type="url" name="portfolio3" class="portfolio-link-input" placeholder="Project URL 3">
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Proposal / Bio</h3>
+        <textarea name="proposal" class="dashboard-textarea" rows="3" required></textarea>
+      </div>
+      <button type="submit" class="save-btn">Save Profile</button>
+    </form>
+    <button class="close-modal" onclick="window.closeModal('dashboardModal')" style="margin-top:16px;">Cancel</button>
+  </div>
+</div>
+
+<!-- Client Dashboard Modal -->
+<div class="modal-overlay client-dashboard-modal" id="clientDashboardModal">
+  <div class="modal">
+    <h2 style="font-size:1.8rem; margin-bottom:16px;">Client Dashboard</h2>
+    <p style="color:#475569; margin-bottom:24px;">Manage your projects and find the perfect editor.</p>
+    <div class="client-actions" style="display:flex; flex-direction:column; gap:12px; margin:24px 0;">
+      <button class="client-action-btn" onclick="window.openPostJobModal()" style="flex:1; padding:16px; border-radius:40px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer;">📝 Post a Job</button>
+      <button class="client-action-btn" onclick="window.openMyJobsModal()" style="flex:1; padding:16px; border-radius:40px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer;">📋 My Jobs</button>
+      <button class="client-action-btn" onclick="window.showEditors(); window.closeModal('clientDashboardModal')" style="flex:1; padding:16px; border-radius:40px; border:1px solid #e2e8f0; background:white; font-weight:600; cursor:pointer;">🔍 Browse Editors</button>
+    </div>
+    <button class="close-modal" onclick="window.closeModal('clientDashboardModal')">Close</button>
+  </div>
+</div>
+
+<!-- Post Job Modal -->
+<div class="modal-overlay dashboard-modal" id="postJobModal">
+  <div class="modal">
+    <h2 style="font-size:1.8rem; margin-bottom:24px;">Post a New Job</h2>
+    <form id="jobPostForm">
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Job Title</h3>
+        <input type="text" name="title" class="dashboard-input" required placeholder="e.g., Need a cinematic wedding video editor">
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Description</h3>
+        <textarea name="description" class="dashboard-textarea" rows="4" required placeholder="Describe the project..."></textarea>
+      </div>
+      <div class="dashboard-section" style="margin-bottom:28px;">
+        <h3 style="font-size:1.2rem; margin-bottom:12px;">Required Software</h3>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="software" value="Premiere Pro"> Premiere Pro</label>
+          <label><input type="checkbox" name="software" value="After Effects"> After Effects</label>
+          <label><input type="checkbox" name="software" value="DaVinci Resolve"> DaVinci Resolve</label>
+          <label><input type="checkbox" name="software" value="Final Cut Pro"> Final Cut Pro</label>
+          <label><input type="checkbox" name="software" value="Photoshop"> Photoshop</label>
+        </div>
+      </div>
+      <button type="submit" class="save-btn">Post Job</button>
+    </form>
+    <button class="close-modal" onclick="window.closeModal('postJobModal')" style="margin-top:16px;">Cancel</button>
+  </div>
+</div>
+
+<!-- My Jobs Modal -->
+<div class="modal-overlay inbox-modal" id="myJobsModal">
+  <div class="modal">
+    <h2 style="font-size:1.8rem; margin-bottom:20px;">My Jobs</h2>
+    <div id="myJobsList" class="my-jobs-list" style="margin:20px 0;"></div>
+    <button class="close-modal" onclick="window.closeModal('myJobsModal')">Close</button>
+  </div>
+</div>
+
+<!-- Main JavaScript (module) -->
+<script type="module" src="script.js"></script>
 </body>
 </html>

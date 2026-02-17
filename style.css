@@ -1,4 +1,4 @@
-/* style.css – all styles for EditConnect (including toast) */
+/* style.css – all styles for EditConnect (including toast and updated hero) */
 
 /* ----- RESET & GLOBAL ----- */
 * {
@@ -239,16 +239,18 @@ header {
 @media (min-width: 768px) { .hero-buttons { justify-content: flex-start; } }
 .hero-image {
   flex: 1;
-  background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
   border-radius: 40px;
   height: 240px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #475569;
-  font-size: 1.2rem;
+  overflow: hidden;
   box-shadow: 0 25px 40px -15px rgba(0,0,0,0.2);
+  background-color: #e2e8f0; /* fallback while loading */
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 @media (min-width: 640px) { .hero-image { height: 280px; } }
 
